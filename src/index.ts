@@ -12,27 +12,27 @@
  */
 
 export default {
-	async fetch(request: Request, env: Env, ctx: ExecutionContext) {
-		await newWeeklyObligations(env, ctx);
-        await killStaleSessions(env, ctx);
+	async fetch(request: Request, env: Env) {
+		await newWeeklyObligations(env);
+        await killStaleSessions(env);
 		return new Response("Hello World!");
 	},
-	async scheduled(controller: ScheduledController, env: Env, ctx: ExecutionContext) {
-        await newWeeklyObligations(env, ctx);
+	async scheduled(controller: ScheduledController, env: Env) {
+        await newWeeklyObligations(env);
         switch (controller.cron) {
             case "0 0 * * SUN": {
-                await newWeeklyObligations(env, ctx);
+                await newWeeklyObligations(env);
                 break;
             }
             case "0 * * * *": {
-                await killStaleSessions(env, ctx);
+                await killStaleSessions(env);
                 break;
             }
 
         }
     }
 } satisfies ExportedHandler<Env>;
-async function newWeeklyObligations(env: Env, ctx: ExecutionContext) {
+async function newWeeklyObligations(env: Env) {
     console.log("Checking for next week's obligation...");
 
     const now = new Date();
@@ -92,7 +92,7 @@ async function newWeeklyObligations(env: Env, ctx: ExecutionContext) {
 
     console.log("Weekly obligation created.");
 }
-async function killStaleSessions(env: Env, ctx: ExecutionContext) {
+async function killStaleSessions(env: Env) {
 	console.log("Checking for stale sessions...");
 	const sessions = await env.AccountingDatabase.prepare(
 		"SELECT * FROM users WHERE session_expiry < strftime('%s', 'now', '-1 hour')"

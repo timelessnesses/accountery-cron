@@ -14,7 +14,7 @@
 export default {
 	async fetch(request: Request, env: Env) {
 		await newWeeklyObligations(env);
-        await killStaleSessions(env);
+        // await killStaleSessions(env);
 		return new Response("Hello World!");
 	},
 	async scheduled(controller: ScheduledController, env: Env) {
@@ -25,7 +25,7 @@ export default {
                 break;
             }
             case "0 * * * *": {
-                await killStaleSessions(env);
+                // await killStaleSessions(env);
                 break;
             }
 
@@ -91,18 +91,4 @@ async function newWeeklyObligations(env: Env) {
         .run();
 
     console.log("Weekly obligation created.");
-}
-async function killStaleSessions(env: Env) {
-	console.log("Checking for stale sessions...");
-	const sessions = await env.AccountingDatabase.prepare(
-		"SELECT * FROM users WHERE session_expiry < strftime('%s', 'now', '-1 hour')"
-	).all();
-	console.log(`Found ${sessions.results.length} stale sessions.`);
-	for (const session of sessions.results) {
-		console.log(`Deleting session for ${session.email}...`);
-		await env.AccountingDatabase.prepare(
-			"UPDATE users SET session_expiry = NULL WHERE email = ?"
-		).bind(session.email).run();
-	}
-	console.log("Stale sessions deleted.");
 }

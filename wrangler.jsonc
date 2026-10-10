@@ -8,25 +8,20 @@
 	"main": "src/index.ts",
 	"compatibility_date": "2026-06-21",
 	"observability": {
-		"enabled": true
+		"enabled": true,
 	},
 	"upload_source_maps": true,
-	"compatibility_flags": [
-		"nodejs_compat"
-	],
+	"compatibility_flags": ["nodejs_compat"],
 	"d1_databases": [
 		{
 			"binding": "AccountingDatabase",
 			"database_name": "accountingdb",
-			"database_id": "a91aeecd-0238-40c9-8506-0382f0ec850f"
-		}
+			"database_id": "a91aeecd-0238-40c9-8506-0382f0ec850f",
+		},
 	],
 	"triggers": {
-		"crons": [
-			"0 0 * * SUN",
-			"0 * * * *"
-		]
-	}
+		"crons": ["0 0 * * SUN", "0 * * * *"],
+	},
 	/**
 	 * Smart Placement
 	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
